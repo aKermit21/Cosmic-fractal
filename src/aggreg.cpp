@@ -104,7 +104,7 @@ bool MainProgAggr::exitHandler(const sf::Keyboard::Key key) {
 }
 
 void MainProgAggr::resetConfig(bool keyAction) {
-  movFluctuate.resumeTimeFlow(); 
+  movFluctuate.reset(); 
   // Mutational grow algo reset
   MutGrow::resetAlgo();
   // Release Memory resources
@@ -170,11 +170,13 @@ void MainProgAggr::drawTopArtefacts(sf::RenderWindow & win,
   TextDraw::DevData data;
   data.primVec.dx = prim_element.stem_xy.vec_xy.dx;
   data.primVec.dy = prim_element.stem_xy.vec_xy.dy;
-  data.coreLevels = MutGrow::getMaxLevel();
+  data.mutationsNumber = MutGrow::getMutationsNumber();
+  data.coreLevels = MutGrow::getCoreElementsNumber();
   data.ElPtrsCnt = MemAndDebug::getElPtrsCnt();
   data.excitedCnt = MutGrow::getExciteCounter();
   data.excitedAct = MutGrow::isGlobalExcited();
   data.frames = frames.getTotalFrames();
+  assert(data.coreLevels >= data.mutationsNumber);
   if (!m_EndOfGame) {
     // update game time as long as game is running
     m_GameTime = movFluctuate.getTimeOfTheGame();

@@ -23,6 +23,7 @@ struct MovFluctuate : PauseAni {
     : PauseAni { opts.optSpeed }
     , fluctuateState {true, false}
     , GrowingEnabled {false}
+    , myCoreLevel {0L}
     , windVelocity {}
     , growingDynamic {0} // all zero's except first element - see next lines of code
   { 
@@ -61,12 +62,14 @@ struct MovFluctuate : PauseAni {
 
   // Transformation full LIVE algorithm data including windy, growing effect
   // More specific algo: per level
-  T_Fluctuate_Algo_Arr algo_data_fluctuate;
+  T_FluctuateAll algo_data_fluctuate;
 
-  T_Fluctuate_Algo_Arr conv_to_fluctuate(T_Algo_Arr);
+  T_FluctuateAll conv_to_fluctuate(T_Algo_Arr);
 
   // Enable restart Growing effect
   void refreshWithRestartGrowing(void);
+  
+  void reset();
 
 private:
 
@@ -86,6 +89,9 @@ private:
   // Wind (shaky)
   void oneStepWindChange();
 
+  // last processed coreLevel - by oneStepWindChange()
+  long myCoreLevel;
+  
   // temporary angular Velocity 
   using T_UpDown = struct {float up; float down;};
   std::array<std::array<T_UpDown, cFrac::NrOfElements>, cFrac::NrOfOrders+1>

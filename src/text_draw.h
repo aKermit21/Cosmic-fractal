@@ -38,7 +38,8 @@ struct TextDraw {
     
   struct DevData {
     Vec primVec;
-    int coreLevels;
+    int mutationsNumber;
+    long coreLevels;
     long ElPtrsCnt;
     MatchingColors matchColors;
     int excitedCnt;  // excited caught number

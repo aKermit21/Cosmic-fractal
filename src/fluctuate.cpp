@@ -8,9 +8,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "fluctuate.h"
+#include "dbg_report.h"
 #include "pause_core.h"
+#include "mut_grow.h"
 #include "basics.h"
 #include <SFML/Window/Keyboard.hpp>
+#include <cstddef>
 #include <cstdlib>
 #include <algorithm>
 #include <iostream>
@@ -31,14 +34,6 @@ bool MovFluctuate::key_decodation(sf::Keyboard::Key key) {
       stop_wind();
     }
     return true; // my key
-  case sf::Keyboard::Key::Space:
-    // Reset/Restore Live transformation algo from more primitive one
-    algo_data_fluctuate = conv_to_fluctuate(algo_data);
-    return true;
-  case sf::Keyboard::Key::R:
-    // Reset/Restore Live transformation algo from more primitive one
-    algo_data_fluctuate = conv_to_fluctuate(algo_data);
-    return true;
   default:
     // Not my key
     return false;
@@ -46,19 +41,21 @@ bool MovFluctuate::key_decodation(sf::Keyboard::Key key) {
 }
 
 
-T_Fluctuate_Algo_Arr MovFluctuate::conv_to_fluctuate(T_Algo_Arr assym_algo){
-  T_Fluctuate_Algo_Arr temp_algo;
+T_FluctuateAll MovFluctuate::conv_to_fluctuate(T_Algo_Arr assym_algo){
+  T_FluctuateAll temp_algo;
   for (size_t level {0}; level <= cFrac::NrOfOrders; ++level) {
     for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
-      temp_algo[level][elem].angle = assym_algo[elem].angle;
-      temp_algo[level][elem].angle_down = assym_algo[elem].angle_down;
+      temp_algo.mainAlgo[level][elem].angle = assym_algo[elem].angle;
+      temp_algo.mainAlgo[level][elem].angle_down = assym_algo[elem].angle_down;
+      temp_algo.coreOnly[level][elem].angleUp = assym_algo[elem].angle;
+      temp_algo.coreOnly[level][elem].angleDown = assym_algo[elem].angle_down;
       // Those below two shall not be varing
-      temp_algo[level][elem].repos = assym_algo[elem].repos;
+      temp_algo.mainAlgo[level][elem].repos = assym_algo[elem].repos;
       // primary element has no initial transformation so assume scale 1.0
       if (level == 0) {
-        temp_algo[level][elem].scale = 1.0;
+        temp_algo.mainAlgo[level][elem].scale = 1.0;
       } else {
-        temp_algo[level][elem].scale = assym_algo[elem].scale;
+        temp_algo.mainAlgo[level][elem].scale = assym_algo[elem].scale;
       }
     }
   }
@@ -85,6 +82,13 @@ void MovFluctuate::resumeWind() {
   fluctuateState.windActive = true;
 }
 
+void MovFluctuate::reset() {
+  // Reset/Restore Live transformation algo from more primitive one
+  algo_data_fluctuate = conv_to_fluctuate(algo_data);
+  // Reset Wind algo
+  myCoreLevel = 0L;
+  resumeTimeFlow(); 
+}
 
 // called once in a display loop
 void MovFluctuate::one_step_cfg_change() {
@@ -97,7 +101,25 @@ void MovFluctuate::one_step_cfg_change() {
 }
 
 void MovFluctuate::oneStepWindChange() {
-  // Wind (shaky)
+  // compare to last processed coreLevel
+  assert(MutGrow::getCoreElementsNumber() >= myCoreLevel);
+
+  if (MutGrow::getCoreElementsNumber() > myCoreLevel) {
+    // handle new cores
+    for (auto coreLevel { myCoreLevel+1 };
+            coreLevel<=MutGrow::getCoreElementsNumber(); ++coreLevel )  {
+      for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
+        // handle new cores - Freeze latest regular angle
+        algo_data_fluctuate.coreOnly[coreLevel][elem].angleUp =
+              algo_data_fluctuate.mainAlgo[coreLevel][elem].angle; 
+        algo_data_fluctuate.coreOnly[coreLevel][elem].angleDown =
+              algo_data_fluctuate.mainAlgo[coreLevel][elem].angle_down; 
+      }
+    }
+    myCoreLevel = MutGrow::getCoreElementsNumber();
+  }
+
+  // Wind (shaky) of normal (no core) elements
   // 0th (primary element) is always fixed
   for (size_t level {1}; level <= cFrac::NrOfOrders; ++level) {
     // enable random play
@@ -105,8 +127,8 @@ void MovFluctuate::oneStepWindChange() {
     // higher level bigger trembling
     // step *= level+1;
     for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
-      auto delta = algo_data_fluctuate[level][elem].angle - algo_data[elem].angle;
-      auto delta_down = algo_data_fluctuate[level][elem].angle_down
+      auto delta = algo_data_fluctuate.mainAlgo[level][elem].angle - algo_data[elem].angle;
+      auto delta_down = algo_data_fluctuate.mainAlgo[level][elem].angle_down
                      - algo_data[elem].angle_down;
 
       // Assymetric random changes for too big deviations
@@ -131,8 +153,8 @@ void MovFluctuate::oneStepWindChange() {
       windVelocity[level][elem].up *= cWindFriction;
 
       // Add velocity to an angle
-      algo_data_fluctuate[level][elem].angle += windVelocity[level][elem].up;
-      algo_data_fluctuate[level][elem].angle_down += windVelocity[level][elem].down;
+      algo_data_fluctuate.mainAlgo[level][elem].angle += windVelocity[level][elem].up;
+      algo_data_fluctuate.mainAlgo[level][elem].angle_down += windVelocity[level][elem].down;
       
     }
   }
@@ -229,14 +251,14 @@ void MovFluctuate::oneStepGrowingChange() {
       // Only scale component modified
       if (level == 0) {
         // primary element has no initial transformation so assume scale 1.0
-        algo_data_fluctuate[level][elem].scale = static_cast<float>(growingDynamic[level]) / LAST_NUMBER;
+        algo_data_fluctuate.mainAlgo[level][elem].scale = static_cast<float>(growingDynamic[level]) / LAST_NUMBER;
       } else {
-        algo_data_fluctuate[level][elem].scale = 
+        algo_data_fluctuate.mainAlgo[level][elem].scale = 
           algo_data[elem].scale * (static_cast<float>(growingDynamic[level]) / LAST_NUMBER);
       }
-      algo_data_fluctuate[level][elem].angle = algo_data[elem].angle;
-      algo_data_fluctuate[level][elem].angle_down = algo_data[elem].angle_down;
-      algo_data_fluctuate[level][elem].repos = algo_data[elem].repos;
+      algo_data_fluctuate.mainAlgo[level][elem].angle = algo_data[elem].angle;
+      algo_data_fluctuate.mainAlgo[level][elem].angle_down = algo_data[elem].angle_down;
+      algo_data_fluctuate.mainAlgo[level][elem].repos = algo_data[elem].repos;
     }
   }
   

@@ -55,7 +55,8 @@ void Element::transform_vec_stem(const MovFluctuate & fluctuate,
                                  const ScreenM & screen,
                                  const std::optional<float> overrideScale) { 
   
-  const T_Fluctuate_Algo_Arr & algo_fluct = fluctuate.algo_data_fluctuate;
+  const T_Fluctuate_Algo_Arr & algo_fluct = fluctuate.algo_data_fluctuate.mainAlgo;
+  const T_FluctuateAngleOnly & algo_core = fluctuate.algo_data_fluctuate.coreOnly;
   
   float fraction; // reposition begining of stem along parent line (in fraction)
   float angle;  // rotation
@@ -91,17 +92,21 @@ void Element::transform_vec_stem(const MovFluctuate & fluctuate,
       if (b_type == upBranch) {
         // For core elements take non-fluctuating angle
         if (coreElement) {
-          angle = fluctuate.algo_data[arr_index].angle;
+          // Steady angle now
+          angle = algo_core[order][arr_index].angleUp;
         } else {
-          angle = algo_fluct.at(order).at(arr_index).angle;
+          // regular element
+          angle = algo_fluct[order][arr_index].angle;
         }
       }
       else {
         // For core elements take non-fluctuating angle
         if (coreElement) {
-          angle = fluctuate.algo_data[arr_index].angle_down;
+          // Steady angle now
+          angle = algo_core[order][arr_index].angleDown;
         } else {
-          angle = algo_fluct.at(order).at(arr_index).angle_down;
+          // regular element
+          angle = algo_fluct[order][arr_index].angle_down;
         }
         // For symmetrical
         //   angle = -angle; // reverse angle

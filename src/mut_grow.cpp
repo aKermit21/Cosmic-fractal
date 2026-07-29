@@ -24,8 +24,9 @@
 bool MutGrow::mMutEnabled {true}; // Enable Mutational Grow
 bool MutGrow::mRescalingActive {false};
 int MutGrow::mGlobalExcited {0};
-int MutGrow::growingCntr = 0;
+int MutGrow::growingCntr {0};
 long MutGrow::growPtrsCnt; 
+long MutGrow::coreElementsCntr {0}; 
 int MutGrow::cYmid {cFrac::WindowYsizeFixed /2}; // shall be overwritten by postInit
 std::vector<std::unique_ptr<MutGrow>> MutGrow::allMutGrowPtrs {};
 
@@ -100,7 +101,7 @@ bool MutGrow::possibleInitGrowMutation(Element * const ptrElement, Frames & fram
               // Calculate growing step
               growPtr->growingFractionStep = growPtr->growingFractionMax / 150.f;
               // Update whole list of Core Nodes chain
-              (void)traverseCoreElements();
+              traverseCoreElements();
               // match colors of the stem
               growPtr->calcDominatingColors();
               // Confirm New Core Element assigned
@@ -119,10 +120,13 @@ float MutGrow::getGrowMutationFraction(void) const {
 }
 
 
-int MutGrow::getMaxLevel(void) {
+int MutGrow::getMutationsNumber(void) {
   return growingCntr;
 }
 
+long MutGrow::getCoreElementsNumber(void) {
+  return coreElementsCntr;
+}
 
 bool MutGrow::isGrowingState(void) const {
   return growingState == MutGrow::growingOngoing;
@@ -309,10 +313,10 @@ void MutGrow::releaseAll() {
   allMutGrowPtrs.clear();  // clear vector itself
 }
 
-// traverse by backlink all Elements from last mutation till primary one
-// and mark them
-long MutGrow::traverseCoreElements() {
-  if (allMutGrowPtrs.empty()) return 0L;
+// traverse by backlink all Elements from last mutation till primary one;
+// mark and count them
+void MutGrow::traverseCoreElements() {
+  if (allMutGrowPtrs.empty()) return;
 
   // Start from last mutational Node
   MutGrow * lastNode = allMutGrowPtrs.back().get();
@@ -321,10 +325,10 @@ long MutGrow::traverseCoreElements() {
   // last Element
   Element * el = lastNode->backlink;
   el->coreElement = true;
+  ++coreElementsCntr; 
 
   // Follow Elements backlinks until last marked
   assert(el->parent_ptr); // at least one link expected
-  long int counter {1L};
   while (el->parent_ptr) {
     el = el->parent_ptr;
     // Check of already marked as Core Element
@@ -332,12 +336,13 @@ long MutGrow::traverseCoreElements() {
       // Exit loop - we've reached an already-processed element
       break;
     }
-    // Mark current element as core
+    // Mark current element as new core
     el->coreElement = true;
-    ++counter;
+    // increment all cores
+    ++coreElementsCntr; 
   }; 
   
-  return counter;
+  return;
 }
 
 // return Number of Excited (core) Elements
@@ -393,6 +398,7 @@ ColorMatch MutGrow::getBestMatchingColor(void) {
 void MutGrow::resetAlgo() {
   growingCntr = 0;
   growPtrsCnt = 0;
+  coreElementsCntr = 0;
   releaseAll();
   mMutEnabled = true;
 }

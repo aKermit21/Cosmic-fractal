@@ -151,8 +151,15 @@ struct DRecSymm {
   float scale; 
 };
 
+struct AnglesRec {
+  float angleUp;
+  float angleDown;
+};
+
 using T_Algo_Arr = std::array<DRec, cFrac::NrOfElements>;
 using T_Algo_Arr_Symm = std::array<DRecSymm, cFrac::NrOfElements>;
+// Diffrent angles only for core elements
+using T_Algo_Arr_Core = std::array<AnglesRec, cFrac::NrOfElements>;
 
 // More specifc rules enabling additional fluctuaction imposed
 // on top of basic Algo defined above.
@@ -160,6 +167,12 @@ using T_Algo_Arr_Symm = std::array<DRecSymm, cFrac::NrOfElements>;
 // or modified scale for progressive growing.
 // 0th order is primary element, then following orders 1..NrOfOrders - thus +1
 using T_Fluctuate_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders +1>;
+//Special - very small - angle fluctuations for core elements
+using T_FluctuateAngleOnly = std::array<T_Algo_Arr_Core, cFrac::NrOfOrders +1>;
+struct T_FluctuateAll {
+  T_Fluctuate_Algo_Arr mainAlgo;
+  T_FluctuateAngleOnly coreOnly;
+};
 
 // Forward declaration to enable cross-reference
 // between Element and ExcGrow (see mut_grow.h)

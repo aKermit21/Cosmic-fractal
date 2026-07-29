@@ -248,7 +248,8 @@ void TextDraw::developer_draw(sf::RenderWindow & win, const DevData & data) cons
     text_ss.imbue(std::locale(std::locale(), new apostrophe_separator));
     text_ss << "dx = " << data.primVec.dx << '\n';
     text_ss << "dy = " << data.primVec.dy << '\n';
-    text_ss << "Mut Level: " << data.coreLevels << '\n';
+    text_ss << "Mut counter: " << data.mutationsNumber << '\n';
+    text_ss << "Core count.: " << data.coreLevels << '\n';
     text_ss << "Ptrs: " << data.ElPtrsCnt << '\n';
     auto color = MutGrow::getBestMatchingColor();
     text_ss << "Match Col: " << colorMatchToString(color) << '\n';

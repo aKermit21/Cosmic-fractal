@@ -83,7 +83,7 @@ struct MutGrow {
   float getGrowMutationFraction(void) const;
 
   // traverse by backlink all Elements from last mutation till primary one
-  static long int traverseCoreElements(void);
+  static void traverseCoreElements(void);
 
   // return Number Excited (core) Elements
   static int getExciteCounter(void);
@@ -91,7 +91,9 @@ struct MutGrow {
   // Additionally optionally draw Color flags on Active mutation
   static void colorFlagsDraw(sf::RenderWindow & win);
 
-  static int getMaxLevel(void);
+  static int getMutationsNumber(void);
+  
+  static long getCoreElementsNumber(void);
   
   // Get best matching colors of last mutation
   static ColorMatch getBestMatchingColor(void);
@@ -119,8 +121,10 @@ private:
   // return true if excited this cycle
   bool checkColorExcite(void);
   
-  static int growingCntr; // counter for all
+  static int growingCntr; // counter for all mutations
   static long growPtrsCnt; // counting pointers
+
+  static long coreElementsCntr; // counter for all core Elements (white key 'C')
 
   // Can be disabled by Pause
   static bool mMutEnabled;
