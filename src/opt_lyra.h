@@ -19,6 +19,7 @@ struct OptParams {
   // Default parameters (if not defined given by CLI)
   bool optDemo {false};
   bool optGrowingOff {false};
+  bool optWobblingCoreOff {false};
   int optSpeed {8}; // default speed
   bool optPictureOff {false};
   bool optFullScreen {false};

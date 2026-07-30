@@ -22,7 +22,8 @@ struct MovFluctuate : PauseAni {
   MovFluctuate(OptParams opts) 
     : PauseAni { opts.optSpeed }
     , fluctuateState {true, false}
-    , GrowingEnabled {false}
+    , growingEnabled {false}
+    , wobblingCoreEnabled {!opts.optWobblingCoreOff}
     , myCoreLevel {0L}
     , windVelocity {}
     , growingDynamic {0} // all zero's except first element - see next lines of code
@@ -30,7 +31,7 @@ struct MovFluctuate : PauseAni {
     Dbg::report_info("Init: MovFluctuate (speed=)", opts.optSpeed); 
     // Growing configurable by CLI option
     if (!opts.optGrowingOff) {
-      GrowingEnabled = true;
+      growingEnabled = true;
       fluctuateState.growingActive = true;
     }
     Dbg::report_info("Growing Activation: ", fluctuateState.growingActive); 
@@ -81,7 +82,10 @@ private:
   constexpr static float cWindFriction { 0.995 };
 
   // General enable state (not necessary in given time)
-  bool GrowingEnabled;
+  bool growingEnabled;
+  
+  // Enable wobbling of latest core Elements
+  bool wobblingCoreEnabled;
   
   // realize growing specific fluctuation change
   void oneStepGrowingChange();
@@ -89,6 +93,10 @@ private:
   // Wind (shaky)
   void oneStepWindChange();
 
+  // Take Wind velocity for last few core elements proportionally
+  // (by factor) from normal
+  void coreWindyTakeFromNormal(long level, float factor);
+    
   // last processed coreLevel - by oneStepWindChange()
   long myCoreLevel;
   

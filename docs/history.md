@@ -19,3 +19,4 @@ description: "Versions description"
 | 0.7.0   | 12.07.2026 | New Release |
 | 0.7.1   | 21.07.2026 | Exit by double tap. Pictures from store (Burj Kalifa, NY city). |
 | 0.8.0   | 23.07.2026 | naming change: fractal-grow -> Cosmic-fractal; exfra->cosfra |
+| 0.8.1   | 30.07.2026 | latest Core stems diminished wobbling (with opt param) |

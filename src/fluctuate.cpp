@@ -121,7 +121,7 @@ void MovFluctuate::oneStepWindChange() {
 
   // Wind (shaky) of normal (no core) elements
   // 0th (primary element) is always fixed
-  for (size_t level {1}; level <= cFrac::NrOfOrders; ++level) {
+  for (long level {1}; level <= cFrac::NrOfOrders; ++level) {
     // enable random play
     int step = 6;
     // higher level bigger trembling
@@ -155,16 +155,41 @@ void MovFluctuate::oneStepWindChange() {
       // Add velocity to an angle
       algo_data_fluctuate.mainAlgo[level][elem].angle += windVelocity[level][elem].up;
       algo_data_fluctuate.mainAlgo[level][elem].angle_down += windVelocity[level][elem].down;
-      
+
+    } // end of elem
+
+    // Core: Optionally consider also wobbling of core elements
+    // Take Wind velocity for last (few) core elements proportionally but attenuated
+    // to wobbling of (as if they) normal elements
+    if (wobblingCoreEnabled) {
+      if (myCoreLevel == level) {
+        coreWindyTakeFromNormal(level, .5f); // 1/2^n (n=1,2...n)
+      } else if (myCoreLevel > 1 and level == myCoreLevel-1) {
+        coreWindyTakeFromNormal(level, .25f); // 1/2^n (n=1,2...n)
+      } else if (myCoreLevel > 2 and level == myCoreLevel-2) {
+        coreWindyTakeFromNormal(level, .12f); // 1/2^n (n=1,2...n)
+      } else { /* do not perform wobbling */ }
     }
+        
+  } // end of level
+}
+
+
+void MovFluctuate::coreWindyTakeFromNormal(long level, float factor) {
+  for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
+    auto windCore = windVelocity[level][elem].up * factor;
+    algo_data_fluctuate.coreOnly[level][elem].angleUp += windCore;
+    windCore = windVelocity[level][elem].down * factor;
+    algo_data_fluctuate.coreOnly[level][elem].angleDown += windCore;
   }
 }
 
+  
 void MovFluctuate::refreshWithRestartGrowing(void) {
   // copy Algo per level - draw() uses this format
   algo_data_fluctuate = conv_to_fluctuate(algo_data);
 
-  if (GrowingEnabled) {
+  if (growingEnabled) {
     fluctuateState.growingActive = true;
     // Populate all with 0's
     growingDynamic = {0};
