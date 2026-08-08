@@ -49,55 +49,62 @@ else
     exit 1
 fi
 
+# Uninstall both local and global possible installations
+for instType in local global; do
+    if [ "$instType" = "local" ]; then
+        echo -e "${white}Uninstalling local configuration...${nc}"
+        # Local
+        PREFIX="$HOME/.local"
+        SUDO=""
+    elif [ "$instType" = "global" ]; then
+        echo -e "${white}Uninstalling global configuration...(Ctrl-D to skip)${nc}"
+        # Global
+        PREFIX="/usr/local"
+        SUDO="sudo"
+        if ! sudo -v 2>/dev/null; then
+            echo "⚠ Sudo not available or cancelled"
+            echo -e "Skipping global. Perform ${yellow}sudo ./uninstall.sh${nc} if needed."
+            exit 0
+        fi
+    else
+        echo -e "${red}❌ Fail: ${yellow}Unknown type: $instType${nc}"
+    fi
 
-# Use in  commands
-# Local
-PREFIX="$HOME/.local"
-SUDO=""
+    $SUDO rm -f "$PREFIX/bin/${binary}"
+    $SUDO rm -f "$PREFIX/bin/${old_binary}"
+    # Uninstall also supporting files
+    if [ -n "$binary" ]; then
+        # Safety check that binary is Non-empty 
+        # binary is also a short name of application
+        $SUDO rm -rf $PREFIX/share/${binary}/
+        $SUDO rm -rf $PREFIX/share/licenses/${binary}/
+    else
+        echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
+        exit 1
+    fi
+    # old naming
+    if [ -n "$old_appl" ]; then
+        # Safety check that appl is Non-empty 
+        $SUDO rm -rf $PREFIX/share/${old_appl}/
+    else
+        echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
+        exit 1
+    fi
 
-$SUDO rm -f "$PREFIX/bin/${binary}"
-$SUDO rm -f "$PREFIX/bin/${old_binary}"
-# Uninstall also supporting files
-if [ -n "$binary" ]; then
-    # Safety check that binary is Non-empty 
-    # binary is also a short name of application
-    $SUDO rm -rf $PREFIX/share/${binary}/
-else
-    echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
-    exit 1
-fi
-# old naming
-if [ -n "$old_appl" ]; then
-    # Safety check that appl is Non-empty 
-    $SUDO rm -rf $PREFIX/share/${old_appl}/
-else
-    echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
-    exit 1
-fi
+    # Remove DE Laucher and Icons
+    if [ -n "$binary" ]; then
+        # Safety check that binary is Non-empty 
+        $SUDO rm -f $PREFIX/share/applications/${binary}.desktop
+        $SUDO rm -f $PREFIX/share//icons/hicolor/256x256/apps/${binary}.png
+        $SUDO rm -f $PREFIX/share//icons/hicolor/48x48/apps/${binary}.png
+    else
+        echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
+        exit 1
+    fi
 
-# Global
-PREFIX="/usr/local"
-SUDO="sudo"
+    # local or global
+    echo -e "${green}Done.${nc}"
 
-$SUDO rm -f "$PREFIX/bin/${binary}"
-$SUDO rm -f "$PREFIX/bin/${old_binary}"
-# Uninstall also supporting files
-# Uninstall also supporting files
-if [ -n "$binary" ]; then
-    # Safety check that binary is Non-empty 
-    # binary is also a short name of application
-    $SUDO rm -rf $PREFIX/share/${binary}/
-else
-    echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
-    exit 1
-fi
-# old naming
-if [ -n "$old_appl" ]; then
-    # Safety check that appl is Non-empty 
-    $SUDO rm -rf $PREFIX/share/${old_appl}/
-else
-    echo -e "${red}❌ Error in script: ${yellow}Not defined appl.${nc}"
-    exit 1
-fi
+done
 
 echo -e "${bright_green}Uninstall complete!${nc}"

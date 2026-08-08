@@ -156,7 +156,7 @@ $SUDO install -Dm644  LICENSE LICENSE-fonts.txt  "$PREFIX/share/licenses/${binar
 # Additional Pictures fetched directly from dedicated project/store url
 echo -e "${bright_yellow}Fetching ${cyan}additional ${appl} pictures...${nc}"
 
-#Additional Pictures placement
+# Additional Pictures placement
 for image in "${images_from_store[@]}"; do
     echo -e "${bright_blue}  ${image}${nc}"
     license=LICENSE_"${image%.jpg}.txt"
@@ -171,7 +171,25 @@ for image in "${images_from_store[@]}"; do
     fi
 done
 
+#Fetch also icons
+echo -e "${bright_blue} Fetching also icons...${nc}"
+icons_from_store=("iconFractal.png" "iconFractal48.png")
+curl -sLO "$url_store/iconFractal.png"
+curl -sLO "$url_store/iconFractal48.png"
+if [ $? -eq 0 ]; then
+    $SUDO install -Dm644 iconFractal.png "$PREFIX/share/icons/hicolor/256x256/apps/cosfra.png"
+    $SUDO install -Dm644 iconFractal48.png "$PREFIX/share/icons/hicolor/48x48/apps/cosfra.png"
+else
+    echo -e "${red}Failed (non-Fatal): curl returned error code while loading icon $? ${nc}"
+fi
 
+# DE Laucher with Icon
+# Create .dektop reference to binary and icon
+echo -e "[Desktop Entry]\nType=Application\nName=Cosmic Fractal\nExec=$PREFIX/bin/${binary}\nIcon=${binary}\nTerminal=false" > temp.desktop
+# Install with proper permissions (644 = rw-r--r--), create directory of needed
+$SUDO install -D -m 644 temp.desktop $PREFIX/share/applications/${binary}.desktop
+
+    
 if [[ $INSTALL_TYPE == local ]]; then
     if ! [[ ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
       echo -e "${red}Path NOT Found. Please add ${white}\"${bright_cyan}\${HOME}/.local/bin${white}\" ${red}to PATH in your shell's config file.${nc}"
@@ -192,6 +210,6 @@ if [[ $INSTALL_TYPE == local ]]; then
 fi
 
 echo -e "🎉 ${bright_green}Installation complete!${nc}"
-echo -e "${bright_cyan}You can type ${white}\"${bright_yellow}cosfra${white}\" ${bright_cyan}to start!${nc}"
+echo -e "${bright_cyan}You can type ${white}\"${bright_yellow}cosfra${white}\" ${bright_cyan}or find \"${white}Cosmic Fractal${bright_cyan}\" in DE launcher to start!${nc}"
 
 rm -rf "$temp_dir"
