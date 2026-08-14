@@ -158,6 +158,37 @@ also try to adjust `--fps` parameter.
 
 Press `F1` at runtime to display list of available key actions.
 
+## Contributions
+Contributions are welcomed! The most straightforward and impactful way to help is by enhancing the **visual content** of the project.
+
+### Add or Improve Size Comparison Images
+
+A great place to start is by adding or replacing images that illustrate the scale of the fractal structure. This is a highly desired contribution because:
+
+*   The current set of four images is small and could be more compelling.
+*   There is significant creative potential to visualize the project's incredible size progression, from a small start to a galactic scale.
+
+### How to Implement a New Picture
+
+Detailed instructions for creating and adding a new image are available in our documentation (Image Scale chapter):
+
+👉 **[Image Scale Implementation Guide](https://exfra.pcc21.com/#image-scale)**
+
+Please follow this guide carefully to ensure your contribution integrates smoothly with the project's build system and rendering logic.
+
+### Create Mac OS Installation
+
+Another area for enhancement is the installation procedure for Mac OS. Currently, the setup process (including installer script) covers only Linux.
+
+### General Contribution Guidelines
+
+For all other contributions:
+
+1. **Fork the repository** and create a new branch for your feature or fix.
+2.  **Ensure your code builds** with the Meson build system.
+3.  **Write clear commit messages** explaining the "what" and "why" of your changes.
+4.  **Submit a pull request** with a detailed description of your work.
+
 ## Modifications
 
 To modify and test changed code, it is recommended to use a separate build directory (e.g., `build-dev/`) containing a modified build settings instance:
