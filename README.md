@@ -172,7 +172,7 @@ A great place to start is by adding or replacing images that illustrate the scal
 
 Detailed instructions for creating and adding a new image are available in our documentation (Image Scale chapter):
 
-👉 **[Image Scale Implementation Guide](https://exfra.pcc21.com/#image-scale)**
+👉 **[Image Scale Implementation Guide](https://exfra.pcc21.com/imageScale)**
 
 Please follow this guide carefully to ensure your contribution integrates smoothly with the project's build system and rendering logic.
 
