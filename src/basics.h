@@ -107,11 +107,9 @@ struct Stem{
   // affects x,y and x1,y1,x2,y2 - shall be done before rotation;
   void repositionStemAbsolute(float dx, float dy);
   // Shrink stem according to given (usable) window Center
-  void shrinkStemCenter(float factor, float cumulativeFactor,
-                        int xCenter, int yCenter, const ScreenM & screen);
+  void shrinkStemCenter(float factor, int xCenter, int yCenter, const ScreenM & screen);
   // Calculate coordinates of stem with some possible adjustmement (due to autoscale)
-  void recalculateStemWidthCoordinates(float cumulativeFactor,
-                                       const ScreenM & screen);
+  void recalculateStemWidthCoordinates(const ScreenM & screen);
 
   // // to be used by Flash Light version
   // virtual bool light_vec_angle_flip() = 0;

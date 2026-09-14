@@ -307,7 +307,7 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
                                           tmp_prim.stem_xy.vec_xy);
   }
   // Recalculate also x1,x2,y1,y2 accordingly
-  prim_element.stem_xy.recalculateStemWidthCoordinates(1.0, screen); // No adjustment
+  prim_element.stem_xy.recalculateStemWidthCoordinates(screen); // No adjustment
 
   // Prepare info text
   bool description_success = false;

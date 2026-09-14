@@ -70,8 +70,7 @@ void AutoScale::performAutoscaleCycle(Element & prim, bool fastMode) {
       if (initialResizingNeeded(m_minmax)) {
         // Perform (initial) shrink if needed (by factor)
         m_cumulativeFactor *= cShrinkStep;
-        prim.stem_xy.shrinkStemCenter(cShrinkStep, m_cumulativeFactor,
-                                      picXcenter, picYcenter, m_screen);
+        prim.stem_xy.shrinkStemCenter(cShrinkStep, picXcenter, picYcenter, m_screen);
       } else {
         // then center picure within window
         // move to center by calculated step
@@ -83,8 +82,8 @@ void AutoScale::performAutoscaleCycle(Element & prim, bool fastMode) {
           // hovewer this should not happen
           Dbg::report_warning("Fallback (2nd) shrink used");
           m_cumulativeFactor *= cShrinkStep;
-          prim.stem_xy.shrinkStemCenter(cShrinkStep, m_cumulativeFactor,
-                                    winUsable_x_center, winUsable_y_center, m_screen);
+          prim.stem_xy.shrinkStemCenter(cShrinkStep, winUsable_x_center,
+                                         winUsable_y_center, m_screen);
         }
       }
     }

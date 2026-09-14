@@ -321,6 +321,57 @@
 
 [[config]]
 
+  description = "Small" 
+  time-date = "Sunday 13-Sep-26  19:17:37"
+
+  [config.primary]  # Primary element location/size
+    x = 480
+    y = 512
+    dx = 245
+    dy = -75
+
+  [config.colors]
+  # Colors of consecutive levels, begin to end stem
+
+    [[config.colors.level]]
+      begin = {red = 195, green = 121, blue = 191}
+        end = {red = 141, green = 24, blue = 105}
+    [[config.colors.level]]
+      begin = {red = 65, green = 199, blue = 28}
+        end = {red = 28, green = 180, blue = 134}
+    [[config.colors.level]]
+      begin = {red = 181, green = 19, blue = 44}
+        end = {red = 63, green = 107, blue = 130}
+    [[config.colors.level]]
+      begin = {red = 190, green = 162, blue = 96}
+        end = {red = 196, green = 141, blue = 109}
+    [[config.colors.level]]
+      begin = {red = 180, green = 63, blue = 107}
+        end = {red = 134, green = 49, blue = 154}
+    [[config.colors.level]]
+      begin = {red = 52, green = 138, blue = 140}
+        end = {red = 76, green = 141, blue = 131}
+    [[config.colors.level]]
+      begin = {red = 173, green = 169, blue = 170}
+        end = {red = 150, green = 202, blue = 32}
+    [[config.colors.level]]
+      begin = {red = 169, green = 144, blue = 163}
+        end = {red = 175, green = 70, blue = 140}
+
+  [config.transform]
+    # consecutive elements/branches
+    element = [
+      {reposition = 0.234, angle = 660, scale = 0.422851},
+      {reposition = 0.468, angle = 605, scale = 0.349669},
+      {reposition = 0.662, angle = 550, scale = 0.276488},
+      {reposition = 0.815, angle = 495, scale = 0.203306},
+      {reposition = 0.927, angle = 440, scale = 0.130125},
+     ]
+
+#-------------------------------------------------------------
+
+[[config]]
+
   description = "Light - more dense" 
   time-date = "Saturday 31-May-25  10:17:37"
 

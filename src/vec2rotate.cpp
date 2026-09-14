@@ -72,26 +72,29 @@ void Element::reposition_stem(const float fraction, const float scale,
 
 
 // Calculate coordinates of stem taking given width
-void Stem::recalculateStemWidthCoordinates(float cumulativeFactor,
-                                       const ScreenM & screen) {
+void Stem::recalculateStemWidthCoordinates(const ScreenM & screen) {
   // Use multiplied values for better accuracy tranformation
   float stem_x, stem_y, length;
   // create perpendicular vector of given width
   stem_x = -vec_xy.dy;
   stem_y = vec_xy.dx;
   length = std::sqrt(stem_x*stem_x + stem_y*stem_y);
-  auto adjustedStemWidth = cumulativeFactor * screen.getPrimStemWidth();
-  y1 =  (vec_xy.y - stem_y * (adjustedStemWidth/length) );
-  y2 =  (vec_xy.y + stem_y * (adjustedStemWidth/length) );
-  x1 =  (vec_xy.x - stem_x * (adjustedStemWidth/length) );
-  x2 =  (vec_xy.x + stem_x * (adjustedStemWidth/length) );
+  // Initial primary vector length square
+  float lengthPrimSq = screen.getPrim().dx * screen.getPrim().dx +
+                       screen.getPrim().dy * screen.getPrim().dy;
+  // width proportional to current primary vector length
+  auto adjustedStemFactor = screen.getPrimStemWidth() * length / lengthPrimSq;
+  y1 =  vec_xy.y - (stem_y * adjustedStemFactor );
+  y2 =  vec_xy.y + (stem_y * adjustedStemFactor );
+  x1 =  vec_xy.x - (stem_x * adjustedStemFactor );
+  x2 =  vec_xy.x + (stem_x * adjustedStemFactor );
 }
 
 
 // Shrink stem according to given (usable) window Center
 // used for auto-scaling
-void Stem::shrinkStemCenter(float factor, float cumulativeFactor, 
-                            int xCenter, int yCenter, const ScreenM & screen) {
+void Stem::shrinkStemCenter(float factor, int xCenter, int yCenter,
+                            const ScreenM & screen) {
 
   assert(factor <= 1.f and factor > 0.f and "factor for shrinking expected to be 0..1");
   assert(xCenter > 0 and yCenter > 0 and "expected plus coordinates");
@@ -112,7 +115,7 @@ void Stem::shrinkStemCenter(float factor, float cumulativeFactor,
   vec_xy.originalDy = vec_xy.dy;
 
   // Calculate coordinates of stem taking given width
-  recalculateStemWidthCoordinates(cumulativeFactor, screen);
+  recalculateStemWidthCoordinates(screen);
 }
 
 // move by given (absolute) dx dy
