@@ -40,7 +40,7 @@ struct ScreenM {
       calcDerivatives();
     }
   
-  sf::RenderWindow initWindow(std::string_view name, bool fullscreen);
+  sf::RenderWindow initWindow(const std::string& name, bool fullscreen);
 
   void resizingHandler(sf::RenderWindow & win, sf::Vector2u newSize);
 

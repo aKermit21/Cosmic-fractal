@@ -10,6 +10,7 @@
 #include "screen_size.h"
 #include "basics.h"
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/WindowEnums.hpp>
 #include <string_view>
 
 float ScreenM::mProportions {1.f};
@@ -122,10 +123,11 @@ void ScreenM::calcDerivatives() {
   YcenterM = static_cast<int>(WindowYsize / 2.0);
 }
 
-sf::RenderWindow ScreenM::initWindow(std::string_view name, bool fullscreen) {
+sf::RenderWindow ScreenM::initWindow(const std::string& name, bool fullscreen) {
   if (fullscreen) {
         auto desktop = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(sf::VideoMode(desktop.size), name,
+                            sf::Style::Default,
                             sf::State::Fullscreen);
     return window;
   } else {

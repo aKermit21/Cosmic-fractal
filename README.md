@@ -103,7 +103,7 @@ The procedure below was tested on Linux (but shall work with possible adaptation
 It is recommended to use the Meson build system, as it verifies dependencies, handles subprojects, enables automatic configuration, and supports explicit installation.
 
 ```shell
-cd fractal-grow
+cd Cosmic-fractal
 mkdir build-release/
 meson setup build-release/
 cd build-release/

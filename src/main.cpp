@@ -51,7 +51,7 @@ int main(int argc, const char** argv)
 
     fractMain.postInitSync();
 
-    std::string_view windowName {cFrac::ProgramName};
+    std::string windowName {cFrac::ProgramName};
     if (options.optDemo) windowName = cFrac::DemoProgramName;
 
     sf::RenderWindow window = fractMain.screen.initWindow(windowName,
