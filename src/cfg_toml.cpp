@@ -16,6 +16,7 @@
 #include "screen_size.h"
 #include "toml++/impl/parse_error.hpp"
 #include "toml++/impl/parser.hpp"
+#include <sstream>
 #include <cassert>
 #include <cstddef>
 #include <iostream>

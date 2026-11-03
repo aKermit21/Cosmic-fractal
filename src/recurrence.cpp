@@ -171,7 +171,7 @@ bool recurance_elements_redraw(Element * const parent_ptr, const long level,
     // Traverse next level
     // Propagate (copy) parent position/vector to child (vec_xy is overriten!)
     it->stem_xy.vec_xy = parent_ptr->stem_xy.vec_xy; 
-    recurance_elements_redraw(it, level+1, win, aggr, autoscale);
+    recurance_elements_redraw(&(*it), level+1, win, aggr, autoscale);
   }
   
   // Follow UP branch
@@ -179,7 +179,7 @@ bool recurance_elements_redraw(Element * const parent_ptr, const long level,
     // Traverse next level
     // Propagate (copy) parent position/vector to child (vec_xy is overriten!)
     it->stem_xy.vec_xy = parent_ptr->stem_xy.vec_xy; 
-    recurance_elements_redraw(it, level+1, win, aggr, autoscale);
+    recurance_elements_redraw(&(*it), level+1, win, aggr, autoscale);
   }
   
   return true; // recurance continue
