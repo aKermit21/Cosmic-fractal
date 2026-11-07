@@ -24,7 +24,14 @@
 #include <string>
 
 const std::string TextDraw::home_alias { "$HOME" };     // alias
-const std::string TextDraw::home_dir = getenv("HOME");  // real directory
+#ifdef _WIN32
+    const char* tmp_home = std::getenv("USERPROFILE");
+    // const char* tmp_data = std::getenv("LOCALAPPDATA");
+#else
+    const char* tmp_home = std::getenv("HOME");
+#endif
+// Make sure pointer is not empty
+const std::string TextDraw::home_dir = (tmp_home != nullptr) ? tmp_home : "";
 
 bool TextDraw::init_font() {
   std::string dirpath_str;

@@ -1,0 +1,55 @@
+#pragma once
+
+#include <array>
+#include <string_view>
+
+// NOTE: config.h.in is automatically converted to config.h
+// by meson build system filling below placeholders.
+// config.h is placed in build directory then
+# define PROJECT_STR "Cosmic-fractal"
+# define VERSION_STR "0.10.0"
+// Executable as well as short program name
+# define EXE_STR "cosfra"
+
+inline constexpr std::string_view cFullProgramName { "Cosmic Fractal" };
+// Old descriptive name - "Exponentially Growing Fractal Leaf"};
+
+// Paths configuration
+// possible to be modified if building on other than Unix-like system
+namespace cPath {
+  inline constexpr std::string_view cFont_file_str = "text_fonts.ttf";
+
+  // Possible locations of fonts file (otherwise current directory)
+  inline constexpr std::array<std::string_view, 7> cFontSubdirs = {{
+    "fonts/", "../fonts/", "../../fonts/", "../../../fonts/",
+    // linux standard user installation of data by meson using --prefix $HOME/.local
+    "$HOME/.local/share/" EXE_STR "/", 
+    // linux standard system installation of data
+    // (package manager vs localy installed)
+    "/usr/share/"  EXE_STR  "/", 
+    "/usr/local/share/"  EXE_STR  "/" 
+  }};
+
+  // Default snapshot / configuration file
+  inline constexpr std::string_view cDefaultSnapshot { EXE_STR "-cfg.toml"};
+  
+  // Possible locations of config file (otherwise current directory)
+  inline constexpr std::array<std::string_view, 7> cLogSubdirs = {{
+    "config/", "../config/", "../../config/", "../../../config/",
+    // linux standard user installation of data by meson using --prefix $HOME/.local
+    "$HOME/.local/share/" EXE_STR "/",
+    // linux standard system installation of data
+    "/usr/share/"  EXE_STR  "/", 
+    "/usr/local/share/"  EXE_STR  "/" }}; 
+
+  // Possible locations of image files (otherwise current directory)
+  inline constexpr std::array<std::string_view, 7> cImageSubdirs = {{
+    // linux standard user installation of data by meson using --prefix $HOME/.local
+    "$HOME/.local/share/" EXE_STR "/",
+    // linux standard system (global) installation of data
+    "/usr/share/"  EXE_STR  "/", 
+    "/usr/local/share/"  EXE_STR  "/",
+    "image/", "../image/", "../../image/", "../../../image" }};
+}
+
+// More configuration data in basics.h
