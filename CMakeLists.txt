@@ -67,5 +67,8 @@ endif()
 add_executable(cosfra ${MY_SOURCES})
 target_compile_features(cosfra PRIVATE cxx_std_17)
 target_link_libraries(cosfra PRIVATE SFML::Graphics tomlplusplus::tomlplusplus Lyra_lib)
-
+if(MSVC)
+    # Enlarging stack to 16 MB
+    target_link_options(cosfra PRIVATE "/STACK:0x1000000")
+endif()
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT cosfra)
