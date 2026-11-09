@@ -57,12 +57,12 @@ This project is based on [fractal-anim](https://github.com/aKermit21/fractal-ani
 
 # Installation
 ## Dependencies
-- **SFML** (2D graphics and more) — to be installed *manually* beforehand (see [sfml website](https://www.sfml-dev.org/))
+- **SFML** (2D graphics and more) — depending on the installation type, it must either be installed *manually* beforehand (see [sfml website](https://www.sfml-dev.org/)) or compiled using the included *CMake* script.
 - lyra (C++ arg parser) — embedded as a subproject (see [original lyra source](https://github.com/bfgroup/Lyra))
 - tomlplusplus — embedded as a subproject (also available through package managers)
 
 ## Using Installer Script
-This is applicable only to Linux as it uses compiled binary.  
+This is applicable only to **Linux** as it uses compiled binary.  
 Install **sfml** and **tomlplusplus** before using for example package manager.  
 Fetch Installer:
 ```shell
@@ -92,15 +92,14 @@ makepkg -si
 This builds the package and installs it with all required dependencies.
 
 ## By Project Compilation
-### Get the Project
-Clone the GitHub project:
-```shell
-git clone https://github.com/aKermit21/Cosmic-fractal.git
-```
+Clone the GitHub project.
 
-### Compilation
-The procedure below was tested on Linux (but shall work with possible adaptations also on MacOS and Windows).  
-It is recommended to use the Meson build system, as it verifies dependencies, handles subprojects, enables automatic configuration, and supports explicit installation.
+The procedure below was tested on Linux and Windows.
+On Linux, the Meson build system is recommended, and on Windows, CMake.
+
+### Using Meson
+
+Install **SFML** manually, preferable using package manager. Then
 
 ```shell
 cd Cosmic-fractal
@@ -111,34 +110,15 @@ meson compile
 ./cosfra [-h]   # to run the app directly from the build directory
 ```
 
-### Optional: Explicit Installation of Program, Dependent Libraries, and Files in the System
-```shell
-meson configure --prefix=$HOME/.local   # optionally, for Linux LOCAL installation
-meson install
-```
-Manually copy the other images (`../image/*.jpg`) to the same location where the `Galaxy.jpg` file was copied.
-
-To install the toml++ shared library in the system (which will NOT be installed automatically as a subproject):
-
-#### Use a Package Manager
-For example, with pacman:
-```shell
-sudo pacman -S tomlplusplus
-```
-
-#### Perform a Custom Build
-One can also build and install it manually:
+### Using CMake
 
 ```shell
-cd ../subprojects/tomlplusplus-3.4.0
-mkdir build-lib/
-meson setup build-lib/
-cd build-lib/
-meson install
-[sudo ldconfig]   # update library cache
-cosfra [-h]     # now shall run from any location
+cd Cosmic-fractal
+cmake -DCMAKE_BUILD_TYPE=Release -B build-dir
+cmake --build build-dir --config Release
+cd build-dir/bin/Release
+[./]cosfra[.exe] [-h]  
 ```
-Note that adding a custom library path may then be needed.
 
 ## Running
 
@@ -179,7 +159,7 @@ Please follow this guide carefully to ensure your contribution integrates smooth
 
 ### Create Mac OS Installation
 
-Another area for enhancement is the installation procedure for Mac OS. Currently, the setup process (including installer script) covers only Linux.
+Another area for enhancement is the installation procedure for Mac OS and possible Windows.
 
 ### General Contribution Guidelines
 
@@ -192,7 +172,7 @@ For all other contributions:
 
 ## Modifications
 
-To modify and test changed code, it is recommended to use a separate build directory (e.g., `build-dev/`) containing a modified build settings instance:
+To modify and test changed code using Meson, it is recommended to use a separate build directory (e.g., `build-dev/`) containing a modified build settings instance:
 
 ```shell
 meson setup build-dev/
