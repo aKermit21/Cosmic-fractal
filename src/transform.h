@@ -24,7 +24,8 @@ struct TranAlg {
     , m_indexPre { 0 }
   {
     Dbg::report_info("Init: TranAlg (speed=) ", speed);
-    Dbg::report_info("Init: TranAlg (algosize=) ", preCalcAlgoData.size());
+    Dbg::report_info("Init: TranAlg (algosize=) ",
+                     static_cast<long>(preCalcAlgoData.size()));
 
     assert(preCalcAlgoData.size() > 0);
     algo_data = conv_to_assym(preCalcAlgoData[0]);

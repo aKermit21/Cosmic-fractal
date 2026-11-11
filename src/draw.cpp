@@ -45,7 +45,8 @@ void Element::draw_stem(sf::RenderWindow &win, long order, const bool displayCor
   assert((order >= 0) and (order <= cFrac::NrOfOrders +1));
   if (stem_xy.x1==0 or stem_xy.x2==0 or stem_xy.y1==0 or stem_xy.y2==0) {
     Dbg::report_warning(" Suspected (0) stem data coordinate(s),"
-                        " possible not initialized ", stem_xy.x1);
+                        " possible not initialized ",
+                        static_cast<long>(stem_xy.x1));
   }
 
   // Check if there is some width of stem to be drawn

@@ -38,7 +38,8 @@ bool new_elements_creation(Element * const parent_ptr, const long level)
 
   if (level == 1) {
     recur_funct_cnt = 0; // reset recurrance counter so it will count per cycle
-    Dbg::report_info("Element size(of): ", sizeof(Element) );
+    Dbg::report_info("Element size(of): ",
+                     static_cast<long>(sizeof(Element)));
   } else { ++recur_funct_cnt; }
 
   // Warn if too much elemnts created

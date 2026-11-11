@@ -32,7 +32,8 @@ struct AutoScale
     resizeHandler();
 
     cycleStart();
-    Dbg::report_info("Init: AutoScale (Xsize)  ", m_minmax.minX);
+    Dbg::report_info("Init: AutoScale (Xsize)  ",
+                     static_cast<long>(m_minmax.minX));
   }
 
   

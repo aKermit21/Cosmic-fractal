@@ -119,7 +119,7 @@ AutoScale::VecDelta AutoScale::centerPicture(bool fastMode) {
   if ((std::abs(delta.dx) > m_screen.getWindowXsize()/2.f) or
       (std::abs(delta.dy) > m_screen.getWindowYsize()/2.f)) {
     Dbg::report_warning("Big AutoScale move - Shall Not happen (|delta|=)",
-                        std::sqrt(delta.dx *delta.dx + delta.dy*delta.dy));
+                static_cast<long>(std::sqrt(delta.dx *delta.dx + delta.dy*delta.dy)));
     return delta;
   }
       

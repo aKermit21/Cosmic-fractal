@@ -378,7 +378,8 @@ bool CfgToml::loadTomlConfig(std::string filePath){
     // std::cout << "ptr: " << ptr << '\n';
     if (!ptr) return false;
     allConfigArr = *ptr;
-    Dbg::report_info("Loaded configurations: ", allConfigArr.size());
+    Dbg::report_info("Loaded configurations: ",
+                     static_cast<long>(allConfigArr.size()));
   }
   catch (const toml::parse_error & err){
     std::stringstream ss;

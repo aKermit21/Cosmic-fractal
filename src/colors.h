@@ -41,7 +41,8 @@ struct ColorPal {
   ColorPal() 
     : m_indexPre { 0 }
   {
-    Dbg::report_info("Init: ColorPal  ", preCalcColorPaletes.size());
+    Dbg::report_info("Init: ColorPal  ",
+                     static_cast<long>(preCalcColorPaletes.size()));
 
     assert(preCalcColorPaletes.size() > 0);
     // default palette first from collection
